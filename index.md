@@ -11,7 +11,6 @@ Project Title
 Table of Contents
 -----------------------
 
-<ul id="toc">
 
 
 **Contributors**
