@@ -11,7 +11,14 @@ Project Title
 Table of Contents
 -----------------------
 
+* [Introduction](#introduction)
 * [Writing](#writing)
+* [Coding](#coding)
+* [Pipeline](#pipeline)
+* [References](#references)
+
+
+
 
 **Contributors**
  -Writing: Olivia Justynski
