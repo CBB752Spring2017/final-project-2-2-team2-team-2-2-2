@@ -65,6 +65,9 @@ These trends, therefore, can be used to predict the likelihood of off-target eff
 
 ### Coding:
 
+Step 1) Align Carl's Genome to Reference 38 using BowTie (so that PAM sites can be easily matched between the two sets later on)
+Step 2) Find strings which match 5'-NGG-3' and 3'-CCN-5' in the aligned reference and in Carl's aligned genome
+Step 3) find sum(CARL_PAM && REF_PAM)/length(REF_PAM) per chromosome to come up with a % score for each of Carl's chromosomes (basically finding the fraction of preserved PAM sites per chromosome because I don't know how else to visualize this or how else to compare the two sets of genomes)
 
 #### Documentation:
 
