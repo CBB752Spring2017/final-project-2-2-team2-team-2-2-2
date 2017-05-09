@@ -1,0 +1,140 @@
+---
+title: "2.2 Coding"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Project 2.2 Coding
+
+
+### Coding:
+Here we present an implementation of a tool which finds PAM sites in the genome of subjectZ,
+the human reference genome, and compares the two sets.
+
+The premise for this tool is as follows. Z's genome has been aligned to refernce version 37,
+so we begin with aligned .fa files for both the Z and reference genome. We first search for the
+5'-NGG-3' motif across chromosomes in both genomes. We also search for the reverse complement
+3'-CCN-5'. Our comparison of similarity is to find sites which are preserved between Z and the
+reference. 
+
+To determine sequence preservation, we had to extend our sequences. A 3-nucleotide region is too
+small to reliably detect, especially when one base in that motif is not constrained. To preserve
+functional specificity, we collect 21 nucleotides upstream of the 5'-GG-3'. We then take the first 
+1000 PAM sites per chromosome on the reference genome, find all PAM sites (with 21nt 5' flank) on Z's
+genome, and determine what fraction of sites were exactly preserved between the two. While CRISPR 
+targeting does not require an exact match between gRNA and target, and in theory two PAM sites may
+be preserved if their flanking regions differ, this level of complexity was not possible to model 
+without taking on a large number of additional assumptions (and increasing runtime).
+
+
+### Documentation
+
+Please see the attached .Rmd file for code (also displayed below)
+```{r setting up, eval=FALSE}
+# load this package to help with parsing genome strings
+library(Rsamtools)
+
+# read in Z's genome
+files <- paste0('~/Dropbox/Z_haplotype_1.fa')
+
+PAM_sites <- list()
+# parse Z's genome, find PAM sites with the GG motif, and store the adjacent 21 nucleotides
+for (j in 1:length(files)){
+  file_path <- files[j]
+  indexFa(file_path)
+  x <- Biostrings::readDNAStringSet(file_path)
+  # as read in, the files have many regions which were not readable--many consequtive
+  # nucleotideas are marked N for unknown. This makes it difficult to find PAM sites
+  # with high confidence... 
+  # to correct for this, each of our hits MUST have a GG in the last two positions
+  seqs <- function (df, chr){
+    buffer <- paste(rep("N",21), collapse="")
+    pattern <- paste(c(buffer,"GG"), collapse="")
+    chr1_PAM_GG <- matchPattern(pattern, df[[chr]], fixed=FALSE)
+    idx <- grepl("GG$", chr1_PAM_GG)
+    chr1_PAM_GG <- chr1_PAM_GG[idx,]
+    
+    # we also look got CCN to find putative sites on the reverse strand
+    pattern <- paste(c("CC",buffer), collapse="")
+    chr1_PAM_CC <- matchPattern(pattern, df[[chr]], fixed=FALSE)
+    idx <- grepl("^CC", chr1_PAM_CC)
+    chr1_PAM_CC <- chr1_PAM_CC[idx,]
+    seqs <- list(chr1_PAM_GG, chr1_PAM_CC)
+    names(seqs) <- paste0(chr,c('_GG','_CC'))
+    return(seqs)
+  }
+  
+  # add the names of the chromosome for sanity
+  for (i in (1:length(x)+(length(x)*(j-1)))){
+    chromosome <- names(x)[(i-((j-1)*length(x)))]
+    print(chromosome)
+    #PAM_sites[[i]] <- seqs(x, chromosome)
+    names(PAM_sites)[[i]] <- chromosome
+  }
+}
+# Store the output
+Carl <- PAM_sites
+
+# read in the reference genome
+PAM_sites <- list()
+ref_path <- '~/Downloads/GCF_000001405.25_GRCh37.p13_genomic.fna'
+indexFa(ref_path)
+x <- Biostrings::readDNAStringSet(ref_path)
+# Find PAM sites in the reference and store the chromosome names
+for (i in (1:length(x))){
+  chromosome <- names(x)[i]
+  print(chromosome)
+  PAM_sites[[i]] <- seqs(x, chromosome)
+  names(PAM_sites)[[i]] <- chromosome
+}
+
+# Filter out genomic regions which didn't map or aren't chromosomes
+idx <- grepl('contig',names(PAM_sites))
+Ref <- PAM_sites[!idx]
+Ref <- Ref[1:24]
+
+
+# Downsample the number of PAM sites
+Csubset <- list()
+Rsubset <- list()
+
+for (i in 1:length(Ref)){
+  print(i)
+  idx <- which(end(Carl[[i]][[1]])<end(Ref[[i]][[1]][1000]))
+  tmp <- Carl[[i]][[1]][idx]
+  Csubset[[i]] <- unlist(lapply(tmp, toString))
+  
+}
+
+for (i in 1:(length(Ref))){
+  print(i)
+  idx <- which(end(Ref[[i]][[1]])<end(Ref[[i]][[1]][1000]))
+  tmp <- Ref[[i]][[1]][idx]
+  Rsubset[[i]] <- unlist(lapply(tmp, toString))
+}
+
+# Calculate the relationship between Z and the reference
+fractions <- vector(mode='double', length=length(Rsubset))
+for (i in 1:length(fractions)){
+  print(i)
+  fractions[i] <- length(intersect(Csubset[[i]], Rsubset[[i]]))/length(Rsubset[[i]])
+}
+
+```
+
+### Results
+
+The following shows the similarity of Z's genome to the reference for the first 1000 PAM sites
+on each chromosome. As expected, many sites are preserved. The variability observed here may be
+due to the effects of downsampling, which was necessary given memory constraints on this implementation.
+```{r plotting, eval=FALSE}
+# Plot the relationship between Z's PAM sites and those in the reference
+par(mar=c(15,4,4,2))
+fractions <- fractions[1:23]
+names(fractions) <- names(Carl)[1:length(fractions)]
+barplot(fractions, ylim = c(0,1), las=2, main = 'Comparison of PAM Sites Common to SubjectZ and Reference (Downsampled)', ylab='Fraction of Reference PAM Sites found in SubjectZ')
+```
+
