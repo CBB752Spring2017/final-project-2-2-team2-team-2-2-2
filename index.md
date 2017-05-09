@@ -11,7 +11,7 @@ Project Title
 Table of Contents
 -----------------------
 
-* [Writing](#Writing)
+* [Writing](#writing)
 
 **Contributors**
  -Writing: Olivia Justynski
