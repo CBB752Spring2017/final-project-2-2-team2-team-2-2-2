@@ -214,11 +214,10 @@ sgRNA libraries for reference and Carl's genomes.
 #### Documentation:
 GuideScan software is an open-source package (available at https://bitbucket.org/arp2012/guidescan_public/overview) that constructs gRNA libraries based on user-defined parameters (required dependencies for the software include python 2.7 with easy_install, along with rename, biopython, samtools, pyfaidx, and bx-python packages, and the pysam module - details can be found in the README.md file that comes with downloading the GuideScan software). In addition to generating libraries based on the most recent human reference genome, GRCh38, and those of other species, it allows users to input their own .fasta file, such as those of Carl Zimmer or GRCh37, which was used for the alignment of Carl’s reads. GuideScan allows users to input a list of chromosome names, desired gRNA length (excluding the PAM sequence and typically 20 to 100 bases long), alternative (to canonical NGG) PAM sites to analyze off targets (defalt is NAG). Users can also include a minimum mismatch similarity (M, default=2) between off target loci and a maximum off target genomic distance for more degenerate potential off-target loci (Q, default=3). 
 
-
-On interactive online version of GuideScan (www.guidescan.com) allows users to examine a much smaller guideRNA library with a user-friendly interface. The online tool is convenient when looking at a single specific guideRNA and its off target informations. The typical output is an Excel file with the following column headings:
+On interactive online version of GuideScan (www.guidescan.com) allows users to examine a much smaller guideRNA library with a user-friendly interface. The online tool is convenient when looking at a single specific guideRNA and information of its off-target loci. The typical output is an Excel file with the following columns:
 1. chromosome name/number (eg chr18)
-2. target site start
-3. target site end
+2. target site start coordinate
+3. target site end coordinate
 4. the guide RNA sequence
 5. cutting efficiency score
 6. cutting specificity score
@@ -226,20 +225,15 @@ On interactive online version of GuideScan (www.guidescan.com) allows users to e
 8. number of total off targets found
 9. off target summary (in the form of M:N_M|Q:N_Q, where N_M and N_Q are the number of number of off targets with M and Q mismatches, respectively)
 
+The cutting specificity and efficiency scores are based on Doench et. al. The specificity score is the likelihood a gRNA will be cut at each individual off target site. It is calculated by counting neighbors of up to Q mismatches, getting a cutting frequency determination (CFD) value and a count for each mismatch neighbors (that is, unique targetable sites in a user-specified range of mismatches) using a mutation matrix. The counts and corresponding CFDs are multiplied and the results are summed. The specificity score is the reciprocal of this value. 
 
-
-#### Results:
+#### Results and Discussion:
 Using Carl’s maternal and paternal genomes and the GRCH37 reference genome, three sgRNA libraries have been constructed using the canonical PAM sequence NGG and a sequence length of 20 bases for chromosome 18. The maternal, paternal, and reference genomes each have 5.75 million sgRNAs, 5.56 million of which are common to all three libraries. The maternal library shared 97.93% of its entries with the paternal library, slightly higher then the 97.61% is shared with the reference genome. Only 1.05% of the maternal sgRNAs are unique to that genome. Similarly, only 1.06% of the paternal sgRNAs are unique to the paternal genome and 1.37% of the reference sgRNAs were not found in either the paternal or maternal genomes. The results are summarized in the venn diagram below:
 
 ![](venn.png)
 
 
 
-
-
-
-
-#### Conclusions:
 
 
 
