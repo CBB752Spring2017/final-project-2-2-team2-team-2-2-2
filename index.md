@@ -6,8 +6,6 @@ tagline: Final Project
 
 Project Title
 ------------------
-CRISPR and personal genomics: The impact of SNPs on sgRNA sets and off target mutations.
-
 
 
 Table of Contents
@@ -23,11 +21,8 @@ Table of Contents
 
 
 **Contributors**
-
  -Writing: Olivia Justynski
- 
  -Coding: Daniel Chawla
- 
  -Pipeline: Amber Jessop
 
 ### Introduction:
@@ -214,14 +209,29 @@ implementation.
 
 
 ### Pipeline:
-
+sgRNA libraries for reference and Carl's genomes.
 
 #### Documentation:
+GuideScan software is an open-source package (available at https://bitbucket.org/arp2012/guidescan_public/overview) that constructs gRNA libraries based on user-defined parameters (required dependencies for the software include python 2.7 with easy_install, along with rename, biopython, samtools, pyfaidx, and bx-python packages, and the pysam module - details can be found in the README.md file that comes with downloading the GuideScan software). In addition to generating libraries based on the most recent human reference genome, GRCh38, and those of other species, it allows users to input their own .fasta file, such as those of Carl Zimmer or GRCh37, which was used for the alignment of Carl’s reads. GuideScan allows users to input a list of chromosome names, desired gRNA length (excluding the PAM sequence and typically 20 to 100 bases long), alternative (to canonical NGG) PAM sites to analyze off targets (defalt is NAG). Users can also include a minimum mismatch similarity (M, default=2) between off target loci and a maximum off target genomic distance for more degenerate potential off-target loci (Q, default=3). 
+
+
+On interactive online version of GuideScan (www.guidescan.com) allows users to examine a much smaller guideRNA library with a user-friendly interface. The online tool is convenient when looking at a single specific guideRNA and its off target informations. The typical output is an Excel file with the following column headings:
+1. chromosome name/number (eg chr18)
+2. target site start
+3. target site end
+4. the guide RNA sequence
+5. cutting efficiency score
+6. cutting specificity score
+7. strand (+/-)
+8. number of total off targets found
+9. off target summary (in the form of M:N_M|Q:N_Q, where N_M and N_Q are the number of number of off targets with M and Q mismatches, respectively)
+
 
 
 #### Results:
+Using Carl’s maternal and paternal genomes and the GRCH37 reference genome, three sgRNA libraries have been constructed using the canonical PAM sequence NGG and a sequence length of 20 bases for chromosome 18. The maternal, paternal, and reference genomes each have 5.75 million sgRNAs, 5.56 million of which are common to all three libraries. The maternal library shared 97.93% of its entries with the paternal library, slightly higher then the 97.61% is shared with the reference genome. Only 1.05% of the maternal sgRNAs are unique to that genome. Similarly, only 1.06% of the paternal sgRNAs are unique to the paternal genome and 1.37% of the reference sgRNAs were not found in either the paternal or maternal genomes. The results are summarized in the venn diagram below:
 
-
+![alt text] (https://github.com/CBB752Spring2017/final-project-2-2-team2-team-2-2-2/blob/master/index.md)
 
 
 
