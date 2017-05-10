@@ -6,6 +6,8 @@ tagline: Final Project
 
 Project Title
 ------------------
+CRISPR and personal genomics: The impact of SNPs on sgRNA sets and off target mutations.
+
 
 
 Table of Contents
@@ -21,8 +23,11 @@ Table of Contents
 
 
 **Contributors**
+
  -Writing: Olivia Justynski
+ 
  -Coding: Daniel Chawla
+ 
  -Pipeline: Amber Jessop
 
 ### Introduction:
