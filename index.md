@@ -19,12 +19,6 @@ Table of Contents
 
 
 
-
-**Contributors**
- -Writing: Olivia Justynski
- -Coding: Daniel Chawla
- -Pipeline: Amber Jessop
-
 ### Introduction:
 
 In this project, we discuss the impact of genetic variation on the use of CRISPR-Cas9 as a therapeutic tool. We first outline the difficulties of avoiding off-target effects in the use CRISPR-Cas9 gene-editing technology, which is made more difficult by the unique SNPs in an individual’s personal genome. We next propose a tool to identify PAM sites in the reference genome as well as in Carl Zimmer’s genome and then compare the sets. Finally, we calculate libraries of guide RNAs for both genomes and discuss their differences.
